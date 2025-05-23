@@ -6,6 +6,7 @@ import rainImg from "../assets/rain.jpg";
 import cloudsImg from "../assets/clouds.jpg";
 
 const API_KEY = "f56afbf3b13e26c4af6ae68f86743e26";
+const UNSPLASH_KEY = "yCUMUFDx0XRXFlvqDvEVneMD_rKCOymqNSsx8I16XDU";
 
 // Mappa per assegnare sfondi diversi in base alle condizioni meteo principali
 const weatherBackgrounds = {
@@ -20,6 +21,7 @@ export default function DetailsPage() {
   const [current, setCurrent] = useState(null); // stato per i dati meteo attuali
   const [forecast, setForecast] = useState([]); // stato per la previsione a 5 giorni
   const [background, setBackground] = useState(null); // sfondo dinamico in base al tempo
+  const [cityBackground, setCityBackground] = useState(null); // sfondo da Unsplash
 
   useEffect(() => {
     // Effetto che si attiva quando cambia la città
@@ -30,6 +32,22 @@ export default function DetailsPage() {
       if (!geoData[0]) return;
 
       const { lat, lon } = geoData[0];
+
+      // Chiamata a Unsplash per ottenere uno sfondo della città
+      try {
+        const unsplashRes = await fetch(`https://api.unsplash.com/search/photos?query=${city}&orientation=landscape&client_id=${UNSPLASH_KEY}`);
+        const unsplashData = await unsplashRes.json();
+        if (unsplashData.results.length > 0) {
+          const url = unsplashData.results[0].urls.full;
+          setCityBackground(url);
+          document.body.style.backgroundImage = `url(${url})`;
+          document.body.style.backgroundSize = "cover";
+          document.body.style.backgroundRepeat = "no-repeat";
+          document.body.style.backgroundPosition = "center";
+        }
+      } catch (err) {
+        console.error("Errore nel caricamento immagine Unsplash:", err);
+      }
 
       // Chiamata per il meteo attuale
       const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=it&appid=${API_KEY}`);
@@ -76,6 +94,11 @@ export default function DetailsPage() {
     };
 
     fetchDetails();
+
+    // Cleanup: rimuovo lo sfondo di Unsplash quando si lascia la pagina
+    return () => {
+      document.body.style.backgroundImage = "";
+    };
   }, [city]);
 
   // Placeholder in caricamento
