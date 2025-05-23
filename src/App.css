@@ -24,3 +24,8 @@ footer {
   font-size: 1.5rem;
   font-weight: bold;
 }
+
+.card-hover:hover {
+  transform: scale(1.03);
+  transition: transform 0.2s ease;
+}
