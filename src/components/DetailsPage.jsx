@@ -48,7 +48,19 @@ export default function DetailsPage() {
 
       const forecastRes = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&lang=it&appid=${API_KEY}`);
       const forecastData = await forecastRes.json();
-      const daily = forecastData.list.filter((item) => item.dt_txt.includes("12:00:00"));
+      const today = new Date().toISOString().split("T")[0];
+      const forecastDays = new Set();
+      const daily = forecastData.list.filter((item) => {
+        if (!item.dt_txt.includes("12:00:00")) return false;
+        const date = item.dt_txt.split(" ")[0];
+        if (date === today) return false;
+        if (forecastDays.size >= 5) return false;
+        if (!forecastDays.has(date)) {
+          forecastDays.add(date);
+          return true;
+        }
+        return false;
+      });
       setForecast(daily.slice(0, 5));
 
       const mainWeather = weatherData.weather[0].main;
@@ -73,18 +85,25 @@ export default function DetailsPage() {
         </Col>
       </Row>
 
-      <Row className="rounded shadow overflow-hidden" style={{ minHeight: "400px" }}>
-        <Col md={8} className="position-relative p-0" style={{ backgroundColor: "#000" }}>
-          {background && <img src={background} alt="weather background" className="w-100 h-100" style={{ objectFit: "cover", opacity: 0.75 }} />}
-          <div style={{ position: "absolute", bottom: 20, left: 20, textAlign: "left" }}>
-            <h1>{current.temp}&deg;C</h1>
-            <div className="d-flex align-items-center">
-              <img src={`http://openweathermap.org/img/wn/${current.icon}@2x.png`} alt="weather icon" />
-              <h5 className="ms-2 text-capitalize mb-0">{current.description}</h5>
-            </div>
+      <Row
+        className="rounded shadow overflow-hidden"
+        style={{
+          minHeight: "400px",
+          backgroundImage: background ? `url(${background})` : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          position: "relative",
+        }}
+      >
+        <Col md={8} className="position-relative p-4 text-white">
+          <h1>{current.temp}&deg;C</h1>
+          <div className="d-flex align-items-center">
+            <img src={`http://openweathermap.org/img/wn/${current.icon}@2x.png`} alt="weather icon" />
+            <h5 className="ms-2 text-capitalize mb-0">{current.description}</h5>
           </div>
         </Col>
-        <Col md={4} className="bg-secondary text-white p-4">
+        <Col md={4} className="text-white p-4" style={{ backgroundColor: "rgba(49, 53, 56, 0.83)" }}>
           <h5>{current.date}</h5>
           <p>Vento: {current.wind} km/h</p>
           <p>Umidità: {current.humidity}%</p>
@@ -92,9 +111,9 @@ export default function DetailsPage() {
         </Col>
       </Row>
 
-      <Row className="mt-4 bg-dark rounded text-white py-3" style={{ maxWidth: "100%" }}>
-        <h5 className="text-center mb-3">Previsioni prossimi 5 giorni</h5>
-        <div className="d-flex justify-content-between">
+      <Row className="mt-4 bg-dark rounded text-white py-3">
+        <h5 className="text-center mb-3">Previsioni per prossimi 4 giorni</h5>
+        <div className="d-flex justify-content-around">
           {forecast.map((item, index) => (
             <div key={index} className="text-center mx-2">
               <p>{new Date(item.dt_txt).toLocaleDateString("it-IT", { weekday: "short" })}</p>
