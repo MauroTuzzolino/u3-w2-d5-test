@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Carousel, Row, Col } from "react-bootstrap";
+import { Container, Carousel, Spinner } from "react-bootstrap";
 import WeatherCard from "./WeatherCard";
 import { useNavigate } from "react-router-dom";
 
@@ -37,6 +37,16 @@ export default function WeatherSection() {
 
     fetchWeather();
   }, []);
+
+  if (Object.keys(weatherData).length === 0) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "200px" }}>
+        <Spinner animation="border" role="status" variant="light">
+          <span className="visually-hidden">Caricamento...</span>
+        </Spinner>
+      </div>
+    );
+  }
 
   return (
     <Container className="my-5">
