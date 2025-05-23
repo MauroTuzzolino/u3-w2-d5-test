@@ -4,6 +4,7 @@ import SearchBar from "./components/SearchBar";
 import WeatherSection from "./components/WeatherSection";
 import FooterComponent from "./components/FooterComponent";
 import DetailsPage from "./components/DetailsPage";
+import RecentSearches from "./components/RecentSearches";
 import spring from "./assets/backgrounds/spring.jpg";
 import summer from "./assets/backgrounds/summer.jpg";
 import autumn from "./assets/backgrounds/autumn.jpg";
@@ -12,7 +13,7 @@ import "./App.css";
 
 // Funzione per determinare la stagione corrente – utile per cambiare lo sfondo dinamicamente
 function getCurrentSeason() {
-  //const fakeDate = new Date("2025-01-01"); // Data fittizia per testare la stagione
+  //const fakeDate = new Date("2025-07-01"); // Data fittizia per testare la stagione
   //const month = fakeDate.getMonth();
   const month = new Date().getMonth();
   if (month >= 2 && month <= 4) return "spring"; // Mar, Apr, Mag
@@ -65,6 +66,7 @@ export default function App() {
                     <div className="d-flex justify-content-center mt-3">
                       <SearchBar />
                     </div>
+                    <RecentSearches />
                   </div>
                   <WeatherSection />
                 </>

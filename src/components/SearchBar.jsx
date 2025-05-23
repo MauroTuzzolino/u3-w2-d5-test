@@ -30,6 +30,10 @@ export default function SearchBar() {
         setShowError(true);
       } else {
         setShowError(false);
+        // salvo la città tra le ricerche recenti
+        const recent = JSON.parse(localStorage.getItem("recentSearches")) || [];
+        const updated = [city, ...recent.filter((c) => c.toLowerCase() !== city.toLowerCase())].slice(0, 5);
+        localStorage.setItem("recentSearches", JSON.stringify(updated));
         navigate(`/details/${city}`);
       }
     } catch (err) {
