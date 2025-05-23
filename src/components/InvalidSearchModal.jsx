@@ -1,5 +1,11 @@
 import { Modal, Button } from "react-bootstrap";
 
+// Questo componente mostra un modale di errore per ricerche non valide
+// Props:
+// - show: booleano per mostrare o meno il modale
+// - onClose: funzione callback quando si chiude
+// - message: messaggio da mostrare all'utente
+
 export default function InvalidSearchModal({ show, onClose, message }) {
   return (
     <Modal show={show} onHide={onClose} centered>
