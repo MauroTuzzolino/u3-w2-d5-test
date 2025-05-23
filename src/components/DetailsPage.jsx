@@ -97,14 +97,19 @@ export default function DetailsPage() {
         }}
       >
         <Col md={8} className="position-relative p-4 text-white">
-          <h1>{current.temp}&deg;C</h1>
+          <h1 className="px-3">{current.temp}&deg;C</h1>
           <div className="d-flex align-items-center">
             <img src={`http://openweathermap.org/img/wn/${current.icon}@2x.png`} alt="weather icon" />
             <h5 className="ms-2 text-capitalize mb-0">{current.description}</h5>
           </div>
         </Col>
-        <Col md={4} className="text-white p-4" style={{ backgroundColor: "rgba(49, 53, 56, 0.83)" }}>
-          <h5>{current.date}</h5>
+        <Col md={4} className="text-white p-4" style={{ backgroundColor: "rgba(49, 53, 56, 0.83)", fontSize: "1.2rem" }}>
+          <h5 style={{ fontSize: "1.5rem", marginBottom: "2rem" }}>
+            {current.date
+              .split(" ")
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(" ")}
+          </h5>
           <p>Vento: {current.wind} km/h</p>
           <p>Umidità: {current.humidity}%</p>
           <p>Pressione: {current.pressure} hPa</p>
